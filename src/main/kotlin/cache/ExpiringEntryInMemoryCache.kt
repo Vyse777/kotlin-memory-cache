@@ -1,7 +1,7 @@
 package cache
 import MILLISECONDS_IN_SECOND
 
-class ExpiringMemoryCache<KeyType : Any, ValueType : Any>(
+class ExpiringEntryInMemoryCache<KeyType : Any, ValueType : Any>(
     override val defaultExpiryTimeInSeconds: Int
 ) : ExpiringCache<KeyType, ValueType> {
     private val cache: MutableMap<ExpiringCacheKey<KeyType>, ValueType> = mutableMapOf()
@@ -10,12 +10,11 @@ class ExpiringMemoryCache<KeyType : Any, ValueType : Any>(
         return System.currentTimeMillis() / MILLISECONDS_IN_SECOND + expireTimeInSeconds
     }
 
+    @Synchronized
     private fun removeExpired() {
-        synchronized(this) {
-            for (key in cache.keys) {
-                if (key.expireTimeInSeconds <= System.currentTimeMillis() / MILLISECONDS_IN_SECOND) {
-                    cache.remove(key)
-                }
+        for (key in cache.keys) {
+            if (key.expireTimeInSeconds <= System.currentTimeMillis() / MILLISECONDS_IN_SECOND) {
+                cache.remove(key)
             }
         }
     }
@@ -68,6 +67,7 @@ class ExpiringMemoryCache<KeyType : Any, ValueType : Any>(
         }
     }
 
+    @Synchronized
     override fun clear() {
         cache.clear()
     }

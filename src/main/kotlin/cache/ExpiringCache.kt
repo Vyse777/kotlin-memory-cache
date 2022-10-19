@@ -1,6 +1,6 @@
 package cache
 
-interface ExpiringCache<KeyType : Any, ValueType : Any> : Cache<KeyType, ValueType> {
+interface ExpiringCache<KeyType, ValueType> : Cache<KeyType, ValueType> {
     val defaultExpiryTimeInSeconds: Int
 
     override fun insert(key: KeyType, value: ValueType) {
