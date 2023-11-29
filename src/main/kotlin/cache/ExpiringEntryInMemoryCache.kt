@@ -12,11 +12,7 @@ class ExpiringEntryInMemoryCache<KeyType : Any, ValueType : Any>(
 
     @Synchronized
     private fun removeExpired() {
-        for (key in cache.keys) {
-            if (key.expireTimeInSeconds <= System.currentTimeMillis() / MILLISECONDS_IN_SECOND) {
-                cache.remove(key)
-            }
-        }
+        cache.keys.removeIf { it.expireTimeInSeconds <= System.currentTimeMillis() / MILLISECONDS_IN_SECOND }
     }
 
     override val size: Int
